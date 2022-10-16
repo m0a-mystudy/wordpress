@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM wordpress:6.0.2-apache
 EXPOSE 8080
 
 ADD ./apache/ports.conf /etc/apache2
