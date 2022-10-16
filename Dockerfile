@@ -1,8 +1,8 @@
-FROM wordpress:6.0.2-php7.4
+FROM php:7.4-apache
 EXPOSE 8080
 
 ADD ./apache/ports.conf /etc/apache2
-ADD ./apache/basicauth.htaccess /etc/basicauth.htaccess
+# ADD ./apache/basicauth.htaccess /etc/basicauth.htaccess
 ADD ./apache/000-default.conf /etc/apache2/sites-available
 ADD ./php/php.ini /etc/production.php.ini
 RUN echo "ServerName test" | tee /etc/apache2/conf-available/fqdn.conf
@@ -40,7 +40,7 @@ RUN chmod +x /usr/local/bin/setup.sh
 COPY --chown=www-data:www-data src /var/www/html
 
 RUN chmod 755 /var/www/html
-RUN chmod 640 /var/www/html/wp-config.php
+# RUN chmod 640 /var/www/html/wp-config.php
 
 ENTRYPOINT ["setup.sh"]
 CMD ["apache2-foreground"]
