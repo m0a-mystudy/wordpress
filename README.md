@@ -18,6 +18,12 @@ docker-compose up --build
 ctrl + c で終了します。
 
 
+wordpressへのアクセス
+http://localhost:8080
+
+phpmyadminへのアクセス
+http://localhost:9991
+
 
 
 
