@@ -1,0 +1,68 @@
+version: '3'
+services:
+  wordpress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - CSQL_INSTANCE=${CSQL_INSTANCE}
+      # - DEVELOPMENT=${DEVELOPMENT}
+      # - USER_PROFILE_URL=${USER_PROFILE_URL}
+      # - USER_PROFILE_API_URL=${USER_PROFILE_API_URL}
+      # - FIREBASE_API_KEY=${FIREBASE_API_KEY}
+      # - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      # - FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
+      # - FIREBASE_APP_ID=${FIREBASE_APP_ID}
+      # - FIREBASE_MEASUREMENT_ID=${FIREBASE_MEASUREMENT_ID}
+      # - USE_BASIC_AUTH=${USE_BASIC_AUTH}
+      # - USE_PRD_PHP_INI=${USE_PRD_PHP_INI}
+      # - FAVICON_BASE_URL=${FAVICON_BASE_URL}
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - app-network
+  all-bakery-wordpress-db:
+    image: mysql:8.0.28-oracle
+    volumes:
+      # - ./dump/:/docker-entrypoint-initdb.d/
+      - wordpress-db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=password
+    networks:
+      - app-network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "all-bakery-phpmyadmin02"
+    links:
+      - all-bakery-wordpress-db
+    ports:
+      - 9991:80
+    volumes:
+      - "./phpmyadmin/sessions:/sessions"
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: all-bakery-wordpress-db
+      PMA_USER: root
+      PMA_PASSWORD: password
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  wordpress-db-data:
+    driver: local
